@@ -1,0 +1,514 @@
+[x-cloak] { display: none !important; } 
+
+body::-webkit-scrollbar {
+  width: 6px;
+}
+
+body::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 6px rgba(37, 3, 128, 0.575) ;
+  background-color: rgba(36, 3, 128, 0.384) ;
+}
+
+body::-webkit-scrollbar-thumb {
+  background-color: rgba(47, 12, 143, 0.575) ;
+  border-radius: 1.5px;
+}
+body::-webkit-scrollbar:hover {
+  background-color: rgba(42, 10, 129, 0.575) !important;
+}
+#captionsArea::-webkit-scrollbar {
+  width: 1px;
+}
+#captionsArea::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 6px rgba(255, 255, 255, 0.055);
+  background-color: rgba(40, 95, 86, 0.603);
+}
+#captionsArea::-webkit-scrollbar-thumb {
+  background-color: rgb(31, 31, 31);
+  border-radius: 0.25em;
+}
+#captionsArea::-webkit-scrollbar:hover {
+  background-color: rgba(37, 3, 128, 0.575) !important;
+}
+
+#templateWrapper::-webkit-scrollbar {
+  width: 2px;
+}
+#templateWrapper::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 6px rgba(165, 100, 255, 0.116);
+  background-color: rgba(96, 85, 255, 0.603);
+}
+#templateWrapper::-webkit-scrollbar-thumb {
+  background-color: rgb(84, 65, 255);
+  border-radius: 0.25em;
+}
+#templateWrapper::-webkit-scrollbar:hover {
+  background-color: rgba(107, 3, 128, 0.575) !important;
+  
+}
+#dataDiv::-webkit-scrollbar {
+  width: 2px;
+}
+#dataDiv::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 6px rgba(165, 100, 255, 0.116);
+  background-color: rgba(96, 85, 255, 0.603);
+}
+#dataDiv::-webkit-scrollbar-thumb {
+  background-color: rgb(84, 65, 255);
+  border-radius: 0.25em;
+}
+#dataDiv::-webkit-scrollbar:hover {
+  background-color: rgba(107, 3, 128, 0.575) !important;
+}
+
+.questionBg{
+  background-color: rgb(203, 206, 255);
+  color: rgb(60, 73, 255);
+}
+.answerBg{
+  background-color: rgb(235, 237, 255);
+  color: rgb(75, 86, 241);
+}
+
+.editorHeader{
+  /* background-color: rgb(45, 51, 107);*/
+}
+
+kbd {
+  background-color: #eee;
+  border-radius: 3px;
+  border: 1px solid #2a0055;
+  border: 1px solid #b4b4b4;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2),
+    0 2px 0 0 rgba(255, 255, 255, 0.7) inset;
+  color: #333;
+  display: inline-block;
+  font-size: 0.66em;
+  font-weight: 700;
+  line-height: 1;
+  padding: 2px 4px;
+  white-space: nowrap;
+}
+
+.menu-shadow{
+  -webkit-box-shadow: 1px 1px 1px 1px rgb(210, 195, 226);
+  -moz-box-shadow: 1px 1px 1px 1px rgb(210, 195, 226);
+  box-shadow: 1px 1px 1px 1px rgb(210, 195, 226);
+}
+
+.new-shadow {
+  -webkit-box-shadow: 2px 2px 2px 2px rgb(177, 174, 174);
+  -moz-box-shadow: 2px 2px 2px 2px rgb(177, 174, 174);
+  box-shadow: 2px 2px 2px 2px rgb(177, 174, 174);
+}
+.icon {
+  width: 32px;
+}
+
+#mainElement::-webkit-scrollbar {
+  width: 3px;
+}
+
+#mainElement::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 6px rgba(165, 100, 255, 0.116);
+  background-color: rgb(255, 255, 255);
+}
+
+#mainElement::-webkit-scrollbar-thumb {
+  background-color: rgb(27, 27, 27);
+  border-radius: 0.25em;
+}
+
+#mainElement::-webkit-scrollbar:hover {
+  background-color: rgba(255, 255, 255, 0.61) !important;
+}
+
+.smallScroll::-webkit-scrollbar {
+  width: 1px;
+}
+
+.smallScroll::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 6px rgba(177, 177, 177, 0.116);
+  background-color: rgb(255, 255, 255);
+}
+
+.smallScroll::-webkit-scrollbar-thumb {
+  background-color: rgba(21, 15, 26, 0.555);
+  border-radius: 0.25em;
+}
+
+.smallScroll::-webkit-scrollbar:hover {
+  background-color: rgba(0, 0, 0, 0.034) !important;
+}
+
+.small-scroll::-webkit-scrollbar {
+  width: 1px;
+}
+
+.small-scroll::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 6px rgba(177, 177, 177, 0.116);
+  background-color: rgb(255, 255, 255);
+}
+
+.small-scroll::-webkit-scrollbar-thumb {
+  background-color: rgba(21, 15, 26, 0.555);
+  border-radius: 0.25em;
+}
+
+.small-scroll::-webkit-scrollbar:hover {
+  background-color: rgba(0, 0, 0, 0.034) !important;
+}
+
+/* this is for contextMenu */
+#menu {
+  position: fixed;
+  z-index: 9999; /* Most times is 2000 used as middle */
+  visibility: hidden;
+  opacity: 0;
+
+  padding: 0px;
+  font-family: sans-serif;
+  font-size: 11px;
+  background: #fff;
+  color: #555;
+  border: 1px solid #c6c6c6;
+
+  -webkit-transition: opacity 0.5s ease-in-out;
+  -moz-transition: opacity 0.5s ease-in-out;
+  transition: opacity 0.5s ease-in-out;
+
+  -webkit-box-shadow: 2px 2px 2px 0px rgba(143, 144, 145, 1);
+  -moz-box-shadow: 2px 2px 2px 0px rgba(143, 144, 145, 1);
+  box-shadow: 2px 2px 2px 0px rgba(143, 144, 145, 1);
+}
+
+#menu button {
+  display: block;
+  color: #555;
+  text-decoration: none;
+  padding: 6px 8px 6px 30px;
+  width: 250px;
+  position: relative;
+}
+
+#menu button img,
+#menu button i.fa {
+  height: 20px;
+  font-size: 17px;
+  width: 20px;
+  position: absolute;
+  left: 5px;
+  top: 2px;
+}
+
+#menu button span {
+  color: #bcb1b3;
+  float: right;
+}
+
+#menu button:hover {
+  color: #fff;
+  background: #3879d9;
+}
+
+#menu hr {
+  border: 1px solid #ebebeb;
+  border-bottom: 0;
+}
+
+.hero img {
+  height: 50vh;
+}
+
+.heading-container {
+  height: 120vh;
+}
+.tab-content {
+  max-height: 0;
+  -webkit-transition: max-height 0.35s;
+  -o-transition: max-height 0.35s;
+  transition: max-height 0.35s;
+}
+
+/* :checked - resize to full height */
+.tab input:checked ~ .tab-content {
+  max-height: 100vh;
+}
+
+/* Label formatting when open */
+.tab input:checked + label {
+  /*@apply text-xl p-5 border-l-2 border-indigo-500 bg-gray-100 text-indigo*/
+  font-size: 1.25rem;
+  /*.text-xl*/
+  padding: 1.25rem;
+  /*.p-5*/
+  border-left-width: 2px;
+  /*.border-l-2*/
+  border-color: #6574cd;
+  /*.border-indigo*/
+  background-color: #f8fafc;
+  /*.bg-gray-100 */
+  color: #6574cd;
+  /*.text-indigo*/
+}
+
+/* Icon */
+.tab label::after {
+  float: right;
+  right: 0;
+  top: 0;
+  display: block;
+  width: 1.5em;
+  height: 1.5em;
+  line-height: 1.5;
+  font-size: 1.25rem;
+  text-align: center;
+  -webkit-transition: all 0.35s;
+  -o-transition: all 0.35s;
+  transition: all 0.35s;
+}
+
+/* Icon formatting - closed */
+.tab input[type="checkbox"] + label::after {
+  content: "+";
+  font-weight: bold;
+  /*.font-bold*/
+  border-width: 1px;
+  /*.border*/
+  border-radius: 9999px;
+  /*.rounded-full */
+  border-color: #b8c2cc;
+  /*.border-grey*/
+}
+
+.tab input[type="radio"] + label::after {
+  content: "\25BE";
+  font-weight: bold;
+  /*.font-bold*/
+  border-width: 1px;
+  /*.border*/
+  border-radius: 9999px;
+  /*.rounded-full */
+  border-color: #b8c2cc;
+  /*.border-grey*/
+}
+
+/* Icon formatting - open */
+.tab input[type="checkbox"]:checked + label::after {
+  transform: rotate(315deg);
+  background-color: #6574cd;
+  /*.bg-indigo*/
+  color: #f8fafc;
+  /*.text-grey-lightest*/
+}
+
+.tab input[type="radio"]:checked + label::after {
+  transform: rotateX(180deg);
+  background-color: #6574cd;
+  /*.bg-indigo*/
+  color: #f8fafc;
+  /*.text-grey-lightest*/
+}
+.hero img {
+  height: 50vh;
+}
+
+.heading-container {
+  height: 50vh;
+  top: -50px;
+}
+.topnav-bg{
+  background-color: rgb(31, 77, 59);
+}
+
+.footnav-item {
+  color: rgb(0, 255, 42);
+}
+.footnav-item :hover{
+  color: rgb(9, 182, 38);
+}
+
+.nav-item {
+  color: rgb(2, 245, 43);
+}
+.nav-item :hover {
+  color: rgb(97, 255, 124);
+}
+
+.active{
+  color: rgb(9, 46, 9);
+  font-weight: bold;
+}
+
+.footer-bg {
+  /* background-color: rgb(0, 17, 7); */
+  background-color: rgb(54, 54, 54);
+}
+.footer-text {
+  /* color: rgb(3, 177, 32); */
+  color: rgb(11, 255, 2);
+}
+
+.fav-text{
+  color: rgb(0, 122, 20);
+}
+#particles{
+  height: 50vh;
+}
+.bg-auth-buttons{
+  background-color: rgb(8, 49, 11);
+  
+}
+/* 
+#nav-bars {
+  color: rgb(0, 187, 16);
+}
+*/
+#nav-bars {
+  color: rgb(43,58 , 229);
+}
+.bg-silver{
+background-color: rgba(192, 192, 192, 0.493);
+}
+#particle{
+  height:60vh;
+}
+.mega-menu {
+  display: none;
+  left: 0;
+  position: absolute;
+  text-align: left;
+  width: 100%;
+}
+
+
+
+/* #hoverable Class Styles
+–––––––––––––––––––––––––––––––––––––––––––––––––– */
+.hoverable {
+  position: static;
+}
+
+.hoverable > a:after {
+  content: "\25BC";
+  font-size: 10px;
+  padding-left: 6px;
+  position: relative;
+  top: -1px;
+}
+
+.hoverable:hover .mega-menu {
+  display: block;
+}
+
+
+/* #toggle Class Styles
+–––––––––––––––––––––––––––––––––––––––––––––––––– */
+
+.toggleable > label:after {
+  content: "\25BC";
+  font-size: 10px;
+  padding-left: 6px;
+  position: relative;
+  top: -1px;
+}
+
+.toggle-input {
+  display: none;
+}
+.toggle-input:not(checked) ~ .mega-menu {
+  display: none;
+}
+
+.toggle-input:checked ~ .mega-menu {
+  display: block;
+}
+
+.toggle-input:checked + label {
+  color: white;
+  background: #2c5282; /*@apply bg-blue-800 */
+}
+
+.toggle-input:checked ~ label:after {
+  content: "\25B2";
+  font-size: 10px;
+  padding-left: 6px;
+  position: relative;
+  top: -1px;
+}
+.mega-menu {
+  display: none;
+  left: 0;
+  position: absolute;
+  text-align: left;
+  width: 100%;
+}
+
+
+
+/* #hoverable Class Styles
+–––––––––––––––––––––––––––––––––––––––––––––––––– */
+.hoverable {
+  position: static;
+}
+
+.hoverable>a:after {
+  content: "\25BC";
+  font-size: 10px;
+  padding-left: 6px;
+  position: relative;
+  top: -1px;
+}
+
+.hoverable:hover .mega-menu {
+  display: block;
+}
+
+
+/* #toggle Class Styles
+–––––––––––––––––––––––––––––––––––––––––––––––––– */
+
+.toggleable>label:after {
+  content: "\25BC";
+  font-size: 10px;
+  padding-left: 6px;
+  position: relative;
+  top: -1px;
+}
+
+.toggle-input {
+  display: none;
+}
+
+.toggle-input:not(checked)~.mega-menu {
+  display: none;
+}
+
+.toggle-input:checked~.mega-menu {
+  display: block;
+}
+
+.toggle-input:checked+label {
+  color: white;
+  @apply bg-indigo-800
+}
+
+.toggle-input:checked~label:after {
+  content: "\25B2";
+  font-size: 10px;
+  padding-left: 6px;
+  position: relative;
+  top: -1px;
+}
+
+.deadline-span{
+  font-size: 0.8em;
+}
+
+.trigger:hover .target{
+  visibility: visible;
+}
+.target{
+  visibility: hidden;
+}
+

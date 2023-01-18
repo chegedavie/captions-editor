@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Captions editor</title>
+    <link rel="stylesheet" href="./dist/tailwind.min.css" />
+
+    <link rel="stylesheet" href="./fa/css/fontawesome.min.css" />
+    <link rel="stylesheet" href="./fa/css/brands.css" />
+    <link rel="stylesheet" href="./fa/css/solid.css" />
+    <link rel="stylesheet" href="./fa/css/regular.css" />
+    <link rel="stylesheet" href="./site-styles.css" />
+    <script rel="text/js" src="./extendPrototypes.js"></script>
+    <script rel="text/js" src="./alpine.js" referrerpolicy="origin"></script>
+    <script rel="text/js" src="./hashmapa.js"></script>
+    <script rel="text/js" src="./jquery-3.6.0.min.js"></script>
+    <script rel="text/js" src="./wavesurfer.js"></script>
+    <script rel="text/js" src="./wavesurfer.cursor.js"></script>
+    <script rel="text/js" src="./wavesurfer.minimap.js"></script>
+    <script rel="text/js" src="./wavesurfer.regions.js"></script>
+    <script rel="text/js" src="./wavesurfer.timeline.js"></script>
+    <script rel="text/js" src="./localStorageRegions.js"></script>
+    <script rel="text/js" src="./functions.js"></script>
+    <script rel="text/js" src="./captionGlob.js"></script>
+    <script rel="text/js" src="./snippetStore.js"></script>
+    <script rel="text/js" src="./templatesUI.js"></script>
+    <script rel="text/js" src="./captionReader.js"></script>
+    <script rel="text/js" src="./wavesurferJoin.js"></script>
+
+    <style>
+      ::cue(v) {
+        color: rgb(255, 81, 0);
+      }
+
+      ::cue(i) {
+        font-style: normal;
+        color: hsl(282, 71%, 97%);
+        font-weight: normal;
+      }
+      ::cue(.loud) {
+        font-size: 2em;
+      }
+      ::cue(i.laughter) {
+        color: rgb(250, 233, 0);
+        font-weight: normal;
+        font: smaller;
+      }
+      ::cue(i.laughs) {
+        color: rgb(137, 50, 250);
+        font-weight: normal;
+      }
+      ::cue(i.sung) {
+        color: rgb(252, 248, 250);
+      }
+      ::cue(.first) {
+        color: rgb(255, 0, 191);
+        font-size: var(-top-8);
+      }
+      #captionsPlayground::-webkit-scrollbar {
+        width: 1px;
+      }
+      #captionsPlayground::-webkit-scrollbar-track {
+        box-shadow: inset 0 0 6px rgba(255, 255, 255, 0.055);
+        background-color: rgba(40, 95, 86, 0.603);
+      }
+      #captionsPlayground::-webkit-scrollbar-thumb {
+        background-color: rgb(31, 31, 31);
+        border-radius: 0.25em;
+      }
+      #captionsPlayground::-webkit-scrollbar:hover {
+        background-color: rgba(37, 3, 128, 0.575) !important;
+      }
+      #waveform::-webkit-scrollbar {
+        width: 4px;
+      }
+      #waveform::-webkit-scrollbar-track {
+        box-shadow: inset 0 0 6px rgba(255, 255, 255, 0.055);
+        background-color: rgba(40, 95, 86, 0.603);
+      }
+      #waveform::-webkit-scrollbar-thumb {
+        background-color: rgb(31, 31, 31);
+        border-radius: 0.25em;
+      }
+      #waveform::-webkit-scrollbar:hover {
+        background-color: rgba(37, 3, 128, 0.575) !important;
+      }
+
+      .menu {
+        -webkit-box-shadow: 2px 2px 2px 0px rgba(143, 144, 145, 1);
+        -moz-box-shadow: 2px 2px 2px 0px rgba(143, 144, 145, 1);
+        box-shadow: 2px 2px 2px 0px rgba(143, 144, 145, 1);
+      }
+      #captionsPlayground {
+        height: 320px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <ul
+      class="absolute list-type-none menu space-y-1 p-1 hidden border border-gray-200 rounded flex-wrap w-full md:w-1/2 lg:w-1/6 bg-white shadow shadow-2xl text-sm"
+      id="target"
+      style="z-index: 1000"
+    >
+      <li>
+        <button
+          class="bg-white py-1 pl-3 pr-1 border border-gray-300 rounded w-full text-left shadow focus:shadow-inner shadow shadow focus:shadow-inner shadow-md"
+          id="newSubtitle"
+        >
+          <span class="far fa-file-alt mr-2 text-lg"></span>New
+        </button>
+      </li>
+      <li>
+        <button
+          class="bg-white py-1 pl-3 pr-1 border border-gray-300 rounded w-full text-left shadow focus:shadow-inner shadow shadow focus:shadow-inner shadow-md"
+          id="openSubtitle"
+        >
+          <span class="far fa-file mr-2 text-lg"></span>Open
+        </button>
+      </li>
+      <li>
+        <button
+          class="bg-white py-1 pl-3 pr-1 border border-gray-300 rounded w-full text-left shadow focus:shadow-inner shadow shadow focus:shadow-inner shadow-md"
+          id="saveSubtitle"
+        >
+          <span class="far fa-save mr-2 text-lg"></span>Save
+        </button>
+      </li>
+      <li>
+        <button
+          class="bg-white py-1 pl-3 pr-1 border border-gray-300 rounded w-full text-left shadow focus:shadow-inner shadow shadow focus:shadow-inner shadow-md"
+          id="saveSubtitleAs"
+        >
+          <span class="far fa-save mr-2 text-lg"></span>Save as
+        </button>
+      </li>
+    </ul>
+    <div
+      id="editorDiv"
+      style="background-color: rgb(49, 46, 129)"
+      class="captionsEditor w-full px-2 lg:p-6 h-screen"
+      x-data="{'loading':false}"
+    >
+      <div id="menu" class="menus hidde" style="background-color: white">
+        <button name="undo">
+          Undo
+          <span>Ctrl + Z</span>
+        </button>
+        <button name="redo">
+          Redo
+          <span>Ctrl + Y</span>
+        </button>
+        <hr />
+        <button name="copy">
+          Copy
+          <span>Ctrl + C</span>
+        </button>
+        <button name="cut">
+          Cut
+          <span>Backspace</span>
+        </button>
+        <button name="paste">
+          Paste
+          <span>Ctrl + V</span>
+        </button>
+        <hr />
+        <button name="selectAll">
+          Select all
+          <span>Ctrl + S</span>
+        </button>
+        <button name="unselect">
+          Unselect All
+          <span>Ctrl + Alt + S</span>
+        </button>
+        <hr />
+        <button name="insertBefore">
+          Insert Before
+          <span>Insert + B</span>
+        </button>
+        <button name="InsertAfter">
+          Insert After
+          <span>Insert + A</span>
+        </button>
+        <hr />
+        <button name="merge">
+          Merge
+          <span>Ctrl + M</span>
+        </button>
+        <button name="delete">
+          Delete
+          <span>Ctrl + D</span>
+        </button>
+      </div>
+      <div class="" style="padding-bottom: 0.8px">
+        <div
+          class="select-none text-sm md:text-base gap-1 flex lg:flex-0 lg:grid lg:grid-cols-8 justify-between border border-white rounded-t text-gray-900 bg-gray-100 w-full"
+        >
+          <div
+            id="hover"
+            class="col-span-1 border cursor-pointer hover:cursor-pointer"
+            title="Hover here or click to open the menu. Menu dissapears when you doubleclick here or navigate away from the menu."
+          >
+            <div id="trigger" class="bg-white py-1 px-2 rounded">
+              <span class="far fa-file mr-1 text-sm md:text-base"></span>
+              Subtitle
+            </div>
+          </div>
+          <div
+            id="editHover"
+            class="col-span-1 border cursor-pointer hover:cursor-pointer"
+          >
+            <div id="editTrigger" class="bg-white py-1 px-2 rounded">
+              <span
+                class="opacity-90 fas fa-edit mr-1 text-sm md:text-base"
+              ></span>
+              Edit
+            </div>
+          </div>
+          <div
+            id="settingsHover"
+            class="col-span-1 border cursor-pointer hover:cursor-pointer"
+          >
+            <div id="settingsTrigger" class="bg-white py-1 px-2 rounded">
+              <span
+                class="opacity-90 fas fa-cog mr-1 text-sm md:text-base"
+              ></span>
+              Settings
+            </div>
+          </div>
+          <div class="col-span-1 border cursor-pointer hover:cursor-pointer">
+            <button
+              id=""
+              class="bg-white w-full py-1 px-2 rounded text-center w-full ring-0 outline-none shadow shadow-md focus:shadow-inner"
+              data-action="showSnippets"
+            >
+              {{ <span class="text-xs">templates</span> }}
+            </button>
+          </div>
+          <div
+            id="mediaHover"
+            class="col-span-1 border cursor-pointer hover:cursor-pointer"
+          >
+            <div id="mediaTrigger" class="bg-white py-1 px-2 rounded">
+              <span class="opacity-90 fas fa-music text-sm md:text-base"></span>
+              Media
+            </div>
+          </div>
+          <div
+            id="helpHover"
+            class="col-span-1 border cursor-pointer hover:cursor-pointer"
+          >
+            <div id="helpTrigger" class="bg-white py-1 px-2 rounded">
+              <span
+                class="opacity-90 fas fa-question-circle mr-1 text-sm md:text-base"
+              ></span>
+              Help
+            </div>
+          </div>
+          <div
+            id="jobHover"
+            class="col-span-1 border cursor-pointer hover:cursor-pointer"
+          >
+            <div id="jobTrigger" class="bg-white py-1 px-2 rounded">
+              <span
+                class="opacity-90 fas fa-clipboard-list mr-1 text-sm md:text-base"
+              ></span>
+              Job
+            </div>
+          </div>
+          <div
+            class="col-span-1 border cursor-pointer hover:cursor-pointer flex"
+          >
+            <div
+              class="m-auto items-center text-xs md:text-base deadline-span"
+              title="time left"
+            >
+              <span class="bg-indigo-900 text-white px-2 py-1 rounded-sm"
+                >00</span
+              >
+              <span class="bg-indigo-900 text-white px-2 py-1 rounded-sm"
+                >23</span
+              >
+              <span class="bg-indigo-900 text-white px-2 py-1 rounded-sm"
+                >01</span
+              >
+            </div>
+          </div>
+        </div>
+
+        <!-- Hover menu items -->
+
+        <!-- 1. Subtitle file menu -->
+        <ul
+          class="absolute list-type-none menu space-y-1 p-1 hidden border border-white rounded flex-wrap w-full md:w-1/2 lg:w-1/6 bg-white"
+          id="target"
+          style="z-index: 1000"
+        >
+          <li>
+            <button
+              class="bg-white py-1 pl-3 pr-1 border border-gray-300 rounded w-full text-left shadow focus:shadow-inner shadow shadow focus:shadow-inner shadow-md"
+              id="newSubtitle"
+            >
+              <span class="far fa-file-alt mr-2 text-lg"></span>New
+            </button>
+          </li>
+          <li>
+            <button
+              class="bg-white py-1 pl-3 pr-1 border border-gray-300 rounded w-full text-left shadow focus:shadow-inner shadow shadow focus:shadow-inner shadow-md"
+              id="openSubtitle"
+            >
+              <span class="far fa-file mr-2 text-lg"></span>Open
+            </button>
+          </li>
+          <li>
+            <button
+              class="bg-white py-1 pl-3 pr-1 border border-gray-300 rounded w-full text-left shadow focus:shadow-inner shadow shadow focus:shadow-inner shadow-md"
+              id="saveSubtitle"
+            >
+              <span class="far fa-save mr-2 text-lg"></span>Save
+            </button>
+          </li>
+          <li>
+            <button
+              class="bg-white py-1 pl-3 pr-1 border border-gray-300 rounded w-full text-left shadow focus:shadow-inner shadow shadow focus:shadow-inner shadow-md"
+              id="saveSubtitleAs"
+            >
+              <span class="far fa-save mr-2 text-lg"></span>Save as
+            </button>
+          </li>
+        </ul>
+
+        <!-- Settings Menu -->
+        <ul
+          class="absolute list-type-none menu space-y-1 p-1 hidden border border-white rounded flex-wrap w-full md:w-1/2 lg:w-1/6 bg-white"
+          id="settingsTarget"
+          style="z-index: 1000"
+        >
+          <li>
+            <div
+              class="divide-x bg-white w-full text-left grid grid-cols-6 border rounded"
+              id="volume"
+            >
+              <div class="col-span-2 text-center py-1 bg-gray-100 rounded-l">
+                <i class="fas fa-volume-up"></i>
+              </div>
+              <div class="col-span-1 text-center py-1 bg-gray-200">
+                <button id="volumeUp" onclick="raiseVolume()">&plus;</button>
+              </div>
+              <div class="col-span-2 text-center py-1 border-gray-300">
+                <span id="volumeEl">200</span>
+              </div>
+              <div class="col-span-1 text-center py-1 bg-gray-200">
+                <button id="volumeDown" onclick="lowerVolume()">&minus;</button>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div
+              class="divide-x bg-white w-full text-left grid grid-cols-6 border rounded"
+              id="speed"
+            >
+              <div class="col-span-2 text-center py-1 bg-gray-100 rounded-l">
+                speed
+              </div>
+              <div class="col-span-1 text-center py-1 bg-gray-200">
+                <button id="raisePlayrate" onclick="raisePlayrate()">
+                  &plus;
+                </button>
+              </div>
+              <div class="col-span-2 text-center py-1 border-gray-300">
+                <span id="playbackRate">1</span>x
+              </div>
+              <div class="col-span-1 text-center py-1 bg-gray-200">
+                <button id="lowerPlayrate" onclick="lowerPlayrate()">
+                  &minus;
+                </button>
+              </div>
+            </div>
+          </li>
+          <li>
+            <div
+              class="divide-x bg-white w-full text-left grid grid-cols-6 border rounded"
+              id="zoom"
+            >
+              <div class="col-span-2 text-center py-1 bg-gray-100 rounded-l">
+                zoom
+              </div>
+              <div class="col-span-1 text-center py-1 bg-gray-200">
+                <button id="zoomIn" onclick="zoomWaveformIn()" title="Alt + X">
+                  &plus;
+                </button>
+              </div>
+              <div class="col-span-2 text-center py-1 border-gray-300">
+                <span id="zoomEl">1.33</span>x
+              </div>
+              <div class="col-span-1 text-center py-1 bg-gray-200">
+                <button
+                  id="zoomOut"
+                  onclick="zoomWaveformOut()"
+                  title="Alt + Z"
+                >
+                  &minus;
+                </button>
+              </div>
+            </div>
+          </li>
+        </ul>
+
+        <!-- Media playback menu -->
+
+        <ul
+          class="absolute list-type-none menu space-y-1 p-1 hidden border border-white rounded flex-wrap w-1/6 bg-white"
+          id="mediaTarget"
+          style="z-index: 1000; padding: 4px"
+        >
+          <li>
+            <div
+              class="divide-x bg-white w-full text-left grid grid-cols-6 border rounded"
+            >
+              <button
+                class="col-span-6 text-center py-1 px-2 shadow focus:shadow-inner shadow-md rounded border"
+                id="pla"
+                title="Shift + Space"
+                data-action="play"
+              >
+                <span id="play">
+                  <span class="float-left">Play</span>
+                  <i class="fas fa-play text-lg"></i>
+                </span>
+                <span id="pause" style="display: none">
+                  <span class="float-left" id="">Pause</span
+                  ><i class="fas fa-pause text-lg"></i>
+                </span>
+              </button>
+            </div>
+          </li>
+          <li>
+            <div
+              class="divide-x bg-white w-full text-left grid grid-cols-6 border rounded"
+            >
+              <button
+                class="col-span-6 text-center py-1 px-2 shadow focus:shadow-inner shadow-md rounded border"
+                title="Save file locally"
+                id="saveMediaFile"
+              >
+                <i class="fas fa-download mr-2"></i>Download
+              </button>
+            </div>
+          </li>
+        </ul>
+
+        <!-- Jobs Menu -->
+        <ul
+          class="absolute list-type-none menu space-y-1 p-1 hidden border border-white rounded flex-wrap w-full md:w-1/2 lg:w-1/6 bg-white"
+          id="jobTarget"
+          style="z-index: 1000"
+        >
+          <li>
+            <button
+              class="bg-blue-100 bg-opacity-30 text-blue-700 text-white py-1 pl-3 pr-1 border border-blue-200 rounded w-full text-left shadow focus:shadow-inner shadow shadow focus:shadow-inner shadow-md"
+              id="submitJob"
+            >
+              <span class="opacity-90 fas fa-location-arrow mr-2"></span
+              ><span class="">Submit</span>
+            </button>
+          </li>
+          <li>
+            <button
+              class="bg-red-100 bg-opacity-30 text-red-700 text-white py-1 pl-3 pr-1 border border-red-200 rounded w-full text-left shadow focus:shadow-inner shadow shadow focus:shadow-inner shadow-md"
+              id="refuseJob"
+            >
+              <span class="opacity-90 fas fa-times mr-2"></span
+              ><span class="">Refuse</span>
+            </button>
+          </li>
+        </ul>
+
+        <!-- Help Menu -->
+        <ul
+          class="absolute list-type-none menu space-y-1 p-1 hidden border border-white rounded flex-wrap w-full md:w-1/2 lg:w-1/6 bg-white"
+          id="helpTarget"
+          style="z-index: 1000"
+        >
+          <li>
+            <button
+              title="shortcuts refference"
+              class="bg-white w-full py-1 px-2 rounded ring-0 text-left outline-none shadow border shadow-md focus:shadow-inner"
+              data-action="showHotkeys"
+            >
+              <i class="fas fa-keyboard mr-1 text-sm md:text-base"></i>Shortcuts
+            </button>
+          </li>
+          <li>
+            <button
+              title="Frequently asked questions"
+              class="bg-white w-full py-1 px-2 rounded ring-0 text-left outline-none shadow border shadow-md focus:shadow-inner"
+              data-action="showHelp"
+            >
+              <i class="fas fa-info-circle mr-1 text-sm md:text-base"></i>FAQs
+            </button>
+          </li>
+        </ul>
+
+        <!-- Edit Menu-->
+
+        <ul
+          class="divide-y-2 absolute list-type-none menu hidden border rounded flex-wrap w-full md:w-1/2 lg:w-1/5 bg-white"
+          id="editTarget"
+          style="z-index: 1000; padding: 8px"
+        >
+          <li>
+            <button
+              class="w-full bg-gray-100 shadow shadow-md focus:bg-white hover:bg-white focus:shadow-inner py-1 px-2"
+              id="newLine"
+            >
+              <span class="float-left text-sm">New line</span
+              ><span class="float-right"
+                ><kbd>Shift</kbd>+<kbd>Enter</kbd></span
+              >
+            </button>
+          </li>
+          <li>
+            <button
+              class="w-full bg-gray-100 shadow shadow-md focus:bg-white hover:bg-white focus:shadow-inner py-1 px-2"
+              id="selectAll"
+            >
+              <span class="float-left text-sm">Select All</span
+              ><span class="float-right"><kbd>Ctlr</kbd>+<kbd>S</kbd></span>
+            </button>
+          </li>
+          <li>
+            <button
+              class="w-full bg-gray-100 shadow shadow-md focus:bg-white hover:bg-white focus:shadow-inner py-1 px-2"
+              id="unselectAll"
+            >
+              <span class="float-left text-sm">Unselect All</span
+              ><span class="float-right"
+                ><kbd>Ctlr</kbd>+<kbd>Alt</kbd>+<kbd>S</kbd></span
+              >
+            </button>
+          </li>
+          <li>
+            <button
+              class="w-full bg-gray-100 shadow shadow-md focus:bg-white hover:bg-white focus:shadow-inner py-1 px-2"
+              id="cut"
+            >
+              <span class="float-left text-sm">Cut</span
+              ><span class="float-right"><kbd>Ctlr</kbd>+<kbd>Q</kbd></span>
+            </button>
+          </li>
+          <li>
+            <button
+              class="w-full bg-gray-100 shadow shadow-md focus:bg-white hover:bg-white focus:shadow-inner py-1 px-2"
+              id="copy"
+            >
+              <span class="float-left text-sm">Copy</span
+              ><span class="float-right"><kbd>Ctlr</kbd>+<kbd>C</kbd></span>
+            </button>
+          </li>
+          <li>
+            <button
+              class="w-full bg-gray-100 shadow shadow-md focus:bg-white hover:bg-white focus:shadow-inner py-1 px-2"
+              id="paste"
+            >
+              <span class="float-left text-sm">Paste</span
+              ><span class="float-right"><kbd>Ctlr</kbd>+<kbd>V</kbd></span>
+            </button>
+          </li>
+          <li>
+            <button
+              class="w-full bg-gray-100 shadow shadow-md focus:bg-white hover:bg-white focus:shadow-inner py-1 px-2"
+              id="undo"
+            >
+              <span class="float-left text-sm">Undo</span
+              ><span class="float-right"><kbd>Ctlr</kbd>+<kbd>Z</kbd></span>
+            </button>
+          </li>
+          <li>
+            <button
+              class="w-full bg-gray-100 shadow shadow-md focus:bg-white hover:bg-white focus:shadow-inner py-1 px-2"
+              id="redo"
+            >
+              <span class="float-left text-sm">Redo</span
+              ><span class="float-right"><kbd>Ctlr</kbd>+<kbd>Y</kbd></span>
+            </button>
+          </li>
+          <li>
+            <button
+              class="w-full bg-gray-100 shadow shadow-md focus:bg-white hover:bg-white focus:shadow-inner py-1 px-2"
+              id="insertBefore"
+            >
+              <span class="float-left text-sm">Insert Before</span
+              ><span class="float-right"><kbd>Insert</kbd>+<kbd>B</kbd></span>
+            </button>
+          </li>
+          <li>
+            <button
+              class="w-full bg-gray-100 shadow shadow-md focus:bg-white hover:bg-white focus:shadow-inner py-1 px-2"
+              id="insertAfter"
+            >
+              <span class="float-left text-sm">Insert After</span
+              ><span class="float-right"><kbd>insert</kbd>+<kbd>A</kbd></span>
+            </button>
+          </li>
+          <li>
+            <button
+              class="w-full bg-gray-100 shadow shadow-md focus:bg-white hover:bg-white focus:shadow-inner py-1 px-2"
+              id="merge"
+            >
+              <span class="float-left text-sm">Merge</span
+              ><span class="float-right"><kbd>Ctlr</kbd>+<kbd>D</kbd></span>
+            </button>
+          </li>
+          <li>
+            <button
+              class="w-full bg-gray-100 shadow shadow-md focus:bg-white hover:bg-white focus:shadow-inner py-1 px-2"
+              id="delete"
+            >
+              <span class="float-left text-sm">Delete</span
+              ><span class="float-right"><kbd>Ctlr</kbd>+<kbd>D</kbd></span>
+            </button>
+          </li>
+        </ul>
+      </div>
+      <div id="demo" class="">
+        <div id="wave-timeline" class="bg-white"></div>
+        <div id="waveform" class="bg-white">
+          <!-- Here be the waveform -->
+        </div>
+
+        <div class="grid grid-cols-5 gap-x-3 pt-4 my-0">
+          <div class="col-span-5 lg:col-span-3">
+            <form
+              role="form"
+              name="edit"
+              style="transition: opacity 300ms linear; margin: 0px 0px"
+              class=""
+              id="captions"
+            >
+              <div
+                class="grid grid-cols-11 editorHeader text-white text-xs shadow shadow-xl rounded-t"
+              >
+                <div
+                  class="col-span-1 p-1 border ring-0 outline-none rounded-tl"
+                >
+                  Line
+                </div>
+                <div class="col-span-1 p-1 border ring-0 outline-none">
+                  Start
+                </div>
+                <div class="col-span-1 p-1 border ring-0 outline-none">
+                  Stop
+                </div>
+                <div class="col-span-7 p-1 border">Caption</div>
+                <div
+                  class="col-span-1 p-1 border ring-0 outline-none rounded-tr"
+                >
+                  Select
+                </div>
+              </div>
+
+              <div
+                id="captionsPlayground"
+                x-data="{captions:localCaptionsClass.regionsData}"
+                class="shadow-inner shadow-2xl border overflow-y-scroll captionArea text-sm bg-white"
+              >
+                <template
+                  x-for="caption in captions"
+                  :key="caption.data.lineNumber"
+                >
+                  <div class="grid grid-cols-11" :id="caption.data.lineNumber">
+                    <input
+                      name="'lineNumber'+caption.data.lineNumber"
+                      type="tel"
+                      class="col-span-1 p-1 border ring-0 outline-none"
+                      :value="caption.data.lineNumber"
+                      :id="'lineNumber'+ caption.data.lineNumber"
+                      :wire:model="'lineNumber'+ caption.data.lineNumber"
+                    /><input
+                      type="text"
+                      class="col-span-1 p-1 border ring-0 outline-none"
+                      :value="caption.start"
+                      :id="'start'+caption.data.lineNumber"
+                      :name="'start'+caption.data.lineNumber"
+                      :wire:model="'start' +caption.data.lineNumber"
+                    /><input
+                      type="text"
+                      class="col-span-1 p-1 border ring-0 outline-none"
+                      :value="caption.end"
+                      :id="'end'+caption.data.lineNumber"
+                      :name="'end'+caption.data.lineNumber"
+                      :wire:model="'end'+caption.data.lineNumber"
+                      x-on:change="(e)=>{alert(e)}"
+                    /><input
+                      type="text"
+                      class="col-span-7 p-1 border enternew ring-0 outline-none"
+                      :value="caption.data.note"
+                      :name="'note'+caption.data.lineNumber"
+                      :id="'note'+caption.data.lineNumber"
+                      :wire:model="'note'+caption.data.lineNumber"
+                    />
+                    <div
+                      class="col-span-1 w-full h-full flex items-center border"
+                    >
+                      <input
+                        type="checkbox"
+                        class="flex self-center m-auto border"
+                        :value="caption.data.lineNumber"
+                        :id="'ischecked'+caption.data.lineNumber"
+                        :name="'ischecked'+caption.data.lineNumber"
+                        :wire:model="'ischecked'+caption.data.lineNumber"
+                      />
+                    </div>
+                  </div>
+                </template>
+              </div>
+            </form>
+          </div>
+
+          <div class="col-span-5 lg:col-span-2" id="nemos">
+            <video
+              style="display: block; margin: 0 auto"
+              src="./video/nasa.mp4"
+              type="video/mpeg"
+              width="800"
+              class="border-white shadow shadow-xl border"
+            >
+              <!-- Here be the video -->
+            </video>
+
+            <div
+              class="hidden shadow-lg mt-3 absolute w-full bg-indigo-900 opacity-80 hover:opacity-100 text-indigo-100 py-2 px-3 rounded-md relative space-y-1"
+              id="errors"
+              x-data="{errorsData:[]}"
+            >
+              <template x-for="error in errorsData" :key="error">
+                <p class="text-sm font-normal">
+                  <span
+                    class="font-normal"
+                    x-text="[error.message]"
+                    :class="error.styling"
+                  >
+                    ></span
+                  >
+                </p>
+              </template>
+            </div>
+            <p
+              class="rounded bg-gray-900 hidden p-2 mt-2 border border-white text-white"
+              id="editorInfo"
+            ></p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      var video = document.querySelector("video");
+      var url = "http://127.0.0.1:5500/video/nasa.mp4";
+      var localCaptionsClass = new LocalCaptions("regions");
+      window.mediaFileURL = url;
+      window.addEventListener("resize", setEditorHeight);
+    </script>
+  </body>
+</html>
