@@ -10,6 +10,10 @@ String.prototype.toCamelCase = function () {
   }
 }
 
+if(!localStorage.getItem('regions')){
+  localStorage.setItem('regions','[]')
+}
+
 async function setEditorHeight () {
   const body = document.body
   const editor = document.getElementById('captionsPlayground')
