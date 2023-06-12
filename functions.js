@@ -605,7 +605,7 @@ function saveLastEdit (e) {
 }
 
 function goToLastEdit () {
-  if(JSON.parse(localStorage.regions) === []) return
+  if(JSON.parse(localStorage.regions).length == 0) return
   var lastEditData = JSON.parse(localStorage.lastEdited)
   var el = document.getElementById(lastEditData.documentId)
   try {
