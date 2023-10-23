@@ -1590,6 +1590,7 @@ async function loadRegionsAsync (regions) {
 // load a video from indexedDB or fetch from Url if not in local storage
 
 function loadVideo (url = false, target = false) {
+  console.log('loadVideo called')
     if (url == false) {
       url = localStorage.videoUrl
     }
@@ -1618,7 +1619,7 @@ function loadVideo (url = false, target = false) {
     })
     //console.log(db, ' out')
   
-    function fetchVideo (videoUrl) {
+    async function fetchVideo (videoUrl) {
       localStorage.setItem('videoUrl', videoUrl)
       let mp4Blob
       let baseName

@@ -159,6 +159,7 @@ document.addEventListener('DOMContentLoaded', function () {
       WaveSurfer.cursor.create()
     ]
   })
+  
   var rateEl = document.getElementById('playbackRate')
   rateEl.textContent = parseFloat(wavesurfer.getPlaybackRate()).toFixed(2)
   var raiseRateEl = document.getElementById('raisePlayrate')
@@ -483,7 +484,7 @@ function loadRegions (regions) {
     region.regionId = added.id
     result.push(region)
   })
-  flashMessage('loaded succesfully', 'editorInfo')
+  result.length !== 0 ? flashMessage('loaded succesfully', 'editorInfo'): null
   return result
 }
 
