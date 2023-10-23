@@ -487,7 +487,7 @@ async function clearCaptions () {
 
   removeCues(video)
 
-  window.location.replace('test.html')
+  window.location.replace('')
   return clearedRegions
 }
 
