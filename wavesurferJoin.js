@@ -292,6 +292,7 @@ document.addEventListener('DOMContentLoaded', function () {
   wavesurfer.on('region-updated', function (e) {
     saveRegions()
   })
+  
   wavesurfer.on('region-removed', saveRegions)
 
   wavesurfer.on('region-play', function (region) {
@@ -301,11 +302,13 @@ document.addEventListener('DOMContentLoaded', function () {
     })
   })
   window.wavesurfer.on('region-update-end', function (e) {
+    console.log('dragging or resizing', e)
     if (
-      e.start !== null &&
+      e.data &&
       document.getElementById('note' + e.data.lineNumber)
     ) {
-      console.log('region end: ', e.start)
+      console.log('region end: ', e.start, 'updating')
+      //saveRegions()
       var localRegions = localCaptionsClass.regionsData
       var linenumber = parseInt(e.data.lineNumber)
       var captionNumber = parseInt(e.data.lineNumber)
@@ -330,6 +333,7 @@ document.addEventListener('DOMContentLoaded', function () {
       currentCue.text = processCaptionString(e.data.note).cueTex
       currentCue.startTime = currentRegion.start
       currentCue.endTime = currentRegion.end
+      //saveRegions()
     }
     let regionToSave
     var regionsData = localCaptionsClass.regionsData
@@ -366,9 +370,11 @@ document.addEventListener('DOMContentLoaded', function () {
       }, 50)
     }
 
-    wavesurfer.un('region-update-end', function () {
+    /**
+     * wavesurfer.un('region-update-end', function () {
       console.log('released')
     })
+     */
   })
 
   let playButton = document.querySelector('#play')
