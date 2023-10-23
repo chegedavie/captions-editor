@@ -10,6 +10,10 @@ String.prototype.toCamelCase = function () {
   }
 }
 
+if(!localStorage.getItem('regions')){
+  localStorage.setItem('regions','[]')
+}
+
 async function setEditorHeight () {
   const body = document.body
   const editor = document.getElementById('captionsPlayground')
@@ -601,6 +605,7 @@ function saveLastEdit (e) {
 }
 
 function goToLastEdit () {
+  if(JSON.parse(localStorage.regions).length == 0) return
   var lastEditData = JSON.parse(localStorage.lastEdited)
   var el = document.getElementById(lastEditData.documentId)
   try {

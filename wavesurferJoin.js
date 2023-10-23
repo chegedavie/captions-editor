@@ -1217,7 +1217,7 @@ var shortcutData = [
     details: 'Lower playback speed'
   },
   {
-    combination: 'Shift + Enter',
+    combination: 'Alt + Enter',
     details: 'add new caption after last caption'
   },
   {
